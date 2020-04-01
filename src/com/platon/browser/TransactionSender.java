@@ -13,25 +13,41 @@ import org.web3j.utils.Convert.Unit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Properties; 
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 
+import java.io.FileInputStream;
 /**
  * @Auther: 
  * @Date: 
  * @Description: 发送转账交易,查询余额
  */
 public class TransactionSender {
-	private static String chainId = "101";
-	private static String nodeAddress = "NODE_ADDRESS";
-	private static String privateKey = "PRIVATEKEY";
-	private static String faucetAddress = "FAUCETADDRESS";
+	Properties prop = new Properties();
+	private static String chainId;
+	private static String nodeAddress;
+	private static String privateKey;
+	private static String faucetAddress;
     private Web3j currentValidWeb3j = Web3j.build(new HttpService(nodeAddress));
     private Credentials credentials = Credentials.create(privateKey);
     private final Logger logger = LogManager.getLogger(TransactionSender.class.getName());
     public TransactionSender (){
     	super();
+    	try{
+	    	InputStream in = new BufferedInputStream (new FileInputStream("a.properties"));
+	        prop.load(in);
+	        chainId = prop.getProperty("chainId");
+	        nodeAddress = prop.getProperty("nodeAddress");
+	        privateKey = prop.getProperty("privateKey");
+	        faucetAddress = prop.getProperty("faucetAddress");
+	    }
+        catch(Exception e){
+            System.out.println(e);
+        } 
+    	
     }
-
     // 发送转账交易
     @Test
     public String transfer(String address, String amount) throws Exception {
